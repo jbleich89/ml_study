@@ -1,16 +1,16 @@
 %% Map with default settings
 % Homogeneous uint8 binary file
-m=memmapfile('../hgdp_truncated_data/HGDP_FinalReport_Forward_header_and_first_1000.txt');
+m=memmapfile('../hgdp_truncated_data/HGDP_FinalReport_Forward_first1000.txt');
 
 %% Notice Data size==file size
-fileinfo=dir('../hgdp_truncated_data/HGDP_FinalReport_Forward_header_and_first_1000.txt');
+fileinfo=dir('../hgdp_truncated_data/HGDP_FinalReport_Forward_first1000.txt');
 fileBytes=fileinfo.bytes
 
 %% We can access the file like it is an array
-m.Data(1:20)' % First few elements
+% m.Data(1:20)' % First few elements
 
 %% Copy a piece an make it look like it was stored
-a=reshape(m.Data(1:100),20,5)'; 
+% a=reshape(m.Data(1:100),20,5)'; 
 
 %% Access some in the middle
 m.Data(2^20:2^20+20)' % some in the middle
@@ -22,7 +22,7 @@ m.repeat=2^20 % Only one megabyte
 m.offset=2^20 %only one megabyte
 
 %% Write to it
-m.writable=true
+% m.writable=true
 m.Data(5)=100;
 m.Data(1:20)' 
 

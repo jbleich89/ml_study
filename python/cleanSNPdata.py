@@ -1,7 +1,16 @@
 import csv,sys,numpy
 from collections import Counter
 
-filename='./hgdp_truncated_data/HGDP_first1000_justSNPs_as_Numbers.csv'
+LTE=True
+
+
+filenameLTE='./hgdp_truncated_data/HGDP_FinalReport_Forward_short.txt'
+filenameFull='./hgdp_truncated_data/HGDP_FinalReport_Forward.txt'
+
+if LTE:
+	filename=filenameLTE
+else : 
+	filename=filenameFull
 
 # To be substituted later for a better dictionary mapping
 # See:	Numerical Representation of DNA Sequences Based on 
@@ -33,23 +42,34 @@ def modes(values):
 	ans=  [k for k,v in count.items() if v == best]
 	if ans.__len__()>0:
 		# print ans[0]
-		return ans
+		return ans[0]
 	else :
 		return None
 
 
+SNPsamples=1043
+SNP_LTE_len=100
+SNPlen=660918
 
-SNPlen=1043
-SNParr = [None]*1045
+csv.register_dialect('HGDPreader', delimiter='\t', skipinitialspace=True, strict=True)
+
 with open(filename,'rb') as csvfile:
-	HGDPreader=csv.reader(csvfile, delimiter=',')
+	HGDPreader=csv.reader(csvfile, 'HGDPreader')
+	Subjects_headder=HGDPreader.next()
+	if LTE:
+		SNPmat= [[None]*SNPsamples for index in range(SNP_LTE_len)]
+	else :
+		SNPmat= [[None]*SNPsamples for index in range(SNPlen )]
 	try :
+		cnt=-1
 		for row in HGDPreader:
+			cnt+=1
 			mostCommon=modes(row);
-			for i,val in enumerate(row):
+			for i,val in enumerate(row[1:row.__len__()]):
 				if val=='--':
 					row[i] = mostCommon
-
-			# print row
+				print i 
+				print cnt
+				SNPmat[cnt][i-1]=row[i]
 	except csv.Error as e :
 		sys.exit('file %s, line %d: %s' % (filename, reader.line_num, e))
