@@ -1,6 +1,7 @@
 %% Map with default settings
 % Homogeneous uint8 binary file
-m=memmapfile('../hgdp_truncated_data/HGDP_FinalReport_Forward_first1000.txt');
+m=memmapfile( '../hgdp_truncated_data/HGDP_first1000_justSNPs_as_Numbers.csv', ...
+                        'Format', {'int64', [1000, ]});
 
 %% Notice Data size==file size
 fileinfo=dir('../hgdp_truncated_data/HGDP_FinalReport_Forward_first1000.txt');
