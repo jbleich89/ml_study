@@ -31,4 +31,4 @@ library(rgl)
 # rcmdr3d<-scatter3d(X1,X2,y)
 
 library(GGally)
-ggpairs(Data)
+# ggpairs(Data)
