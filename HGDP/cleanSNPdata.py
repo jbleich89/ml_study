@@ -12,27 +12,12 @@ if LTE:
 else : 
 	filename=filenameFull
 
-# To be substituted later for a better dictionary mapping
-# See:	Numerical Representation of DNA Sequences Based on 
-#		Genetic Code Context and Its Applications in Periodicity 
-#		Analysis of Genomes
+def file_len(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
 
-genDict= {	'AA'	:	11,\
-			'AC' 	:	12,\
-			'AG' 	:	13,\
-			'AT' 	:	14,\
-			'CA'	:	21,\
-			'CC' 	:	22,\
-			'CG' 	:	23,\
-			'CT' 	:	24,\
-			'GA'	:	31,\
-			'GC' 	:	32,\
-			'GG' 	:	33,\
-			'GT' 	:	34,\
-			'TA'	:	41,\
-			'TC' 	:	42,\
-			'TG' 	:	43,\
-			'TT' 	:	44 }
 
 def modes(values):
 	count = Counter(values)
@@ -48,28 +33,33 @@ def modes(values):
 
 
 SNPsamples=1043
-SNP_LTE_len=100
-SNPlen=660918
 
 csv.register_dialect('HGDPreader', delimiter='\t', skipinitialspace=True, strict=True)
 
 with open(filename,'rb') as csvfile:
+
+	SNPlen=file_len(filename)
+
+	SNPmat= [[None]*SNPsamples for index in range(SNPlen)]
+	
 	HGDPreader=csv.reader(csvfile, 'HGDPreader')
+	
 	Subjects_headder=HGDPreader.next()
-	if LTE:
-		SNPmat= [[None]*SNPsamples for index in range(SNP_LTE_len)]
-	else :
-		SNPmat= [[None]*SNPsamples for index in range(SNPlen )]
+	
 	try :
 		cnt=-1
 		for row in HGDPreader:
 			cnt+=1
 			mostCommon=modes(row);
+			SNPlen
 			for i,val in enumerate(row[1:row.__len__()]):
-				if val=='--':
-					row[i] = mostCommon
-				print i 
-				print cnt
-				SNPmat[cnt][i-1]=row[i]
+				if val==B1B1:
+					row[i] = '1'
+				else if val==B1B2 or val=B2B1 : 
+					row[i] = '0'
+				else if val==B2B2 : 
+					row[i] = '-1'
+				SNPmat[cnt][i]=row[i]
+				# TODO: eliminate SNP's with more than 10% missing values.
 	except csv.Error as e :
 		sys.exit('file %s, line %d: %s' % (filename, reader.line_num, e))

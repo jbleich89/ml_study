@@ -15,7 +15,7 @@ library(scatterplot3d)
 
 library(rgl)
 
-# rgl3d_12<-plot3d(Data, col="red", size=3)
+rgl3d_12<-plot3d(Data, col="red", size=3)
 # rgl3d_13<-plot3d(X1,X3,y, col="red", size=3)
 # rgl3d_14<-plot3d(X1,X4,y, col="red", size=3)
 # rgl3d_15<-plot3d(X1,X5,y, col="red", size=3)
