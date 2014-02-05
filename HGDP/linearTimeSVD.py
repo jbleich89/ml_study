@@ -34,9 +34,10 @@ def selectWitProb(P) :
 		return index
 
 
-# Need to go through and double check column vs rows
+# TODO: Need to go through and double check column vs rows
 def linearTimeSVD( A , P , c , k ):
-	C=np.empty([c,cols(A)]) 
+	Acols=cols(A)
+	C=np.empty([c,Acols]) 
 	if (not checkValidLinearTimeSVD(A , P , c , k)):
 		return None
 	for i in range(c):
@@ -47,8 +48,13 @@ def linearTimeSVD( A , P , c , k ):
 	C_T=C.transpose()
 	w, V = np.linalg.eig(C_T.dotC)
 	
-	H_k = n.empty([k,])
+	H_k = n.empty([k,Acols])
 	for i in range(k) : 
+		h_t=C.dot(V[:,i])
+		H_k[i,:]=h_t.divide(w[i])
+	return H_k,V
+
+
 
 
 
