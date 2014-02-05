@@ -72,24 +72,15 @@ def computePvectForRows(fname, beta, header=True, rowLabels=True) :
 
 
 # TODO: Need to go through and double check column vs rows
-def SVD(  , P , c , k ):
-	Acols=cols(A)
-	Arows=rows(A)
-
-	C=np.empty([c,Acols]) 
-
-
+def SVD( P , C , k ):
+	Ccols=cols(C)
+	Crows=rows(C)	
 	
-	if (not checkValidLinearTimeSVD(A , P , c , k)):
-		return None
-	for i in range(c):
-		i_t = selectWitProb(P)
-		beta = math.sqrt( c * P[i_t] )
-		for j,val in enumerate(A[i_t,:]):
-			C[i,j]=val/beta
 	C_T=C.transpose()
-	w, V = np.linalg.eig(C_T.dotC)
+	w_e, V_e = np.linalg.eig(C_T.dot(C))
 	
+	U_svd, S_svd, Vt_svd = np.linalg.svd(C, full_matrices=True)
+
 	H_k = n.empty([k,Acols])
 	for i in range(k) : 
 		h_t=C.dot(V[:,i])
@@ -98,6 +89,9 @@ def SVD(  , P , c , k ):
 
 # I send Nate a list of row numbers that I want to put into C, he sends me C
 
+def checkSVDvsEigDecomp(C, U_svd, S_svd, Vt_svd):
+	S[:S_svd.__len__(), :S_svd.__len__()] = numpy.diag(S_svd)
+	numpy.allclose(C, numpy.dot(U_svd, numpy.dot(S_svd, Vt_svd)))
 
 
 
