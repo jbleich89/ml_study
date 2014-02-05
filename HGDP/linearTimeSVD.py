@@ -22,8 +22,6 @@ def selectWitProb(P) :
 		rand.seed(1)
 		new = False
 	num = rand.random()
-
-	index=-1
 	if num==0:
 		return 0
 	else :
@@ -33,11 +31,55 @@ def selectWitProb(P) :
 			num  -= P[index]
 		return index
 
+def data_size(fname, header=True, rowLabels=True):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+    		pass
+    	for j, c in enumerate(l) : 
+    		pass
+
+	    if header : 
+	    	rows = l
+	    else :
+	    	rows = l+1
+
+	    if rowLabels : 
+	    	columns = c 
+	    else :
+	    	columns = c+1
+	    return columns , rows
+	else :
+		return None,None
+
+
+def computePvectForRows(fname, beta, header=True, rowLabels=True) : 
+	columns,rows = data_size(fname)
+	ARowMags = np.zeros([1,rows])
+	for j,row in enumerate(fname) : 
+		if j==0 and headder :
+			pass 
+		if headder : 
+			j -= 1 			
+		for i,value in enumerate(row) :
+			ARowMags[0,j] += float(value)**2
+	ARowMagsSum= ARowMags.sum() 
+	P  =[  beta*ARowMags[0]/( ARowMagsSum ) ]
+
+
+
+
+
+
 
 # TODO: Need to go through and double check column vs rows
-def linearTimeSVD( A , P , c , k ):
+def SVD(  , P , c , k ):
 	Acols=cols(A)
+	Arows=rows(A)
+
 	C=np.empty([c,Acols]) 
+
+
+	
 	if (not checkValidLinearTimeSVD(A , P , c , k)):
 		return None
 	for i in range(c):
@@ -54,7 +96,7 @@ def linearTimeSVD( A , P , c , k ):
 		H_k[i,:]=h_t.divide(w[i])
 	return H_k,V
 
-
+# I send Nate a list of row numbers that I want to put into C, he sends me C
 
 
 
