@@ -4,8 +4,8 @@ from collections import Counter
 LTE=True
 
 
-filenameLTE='./hgdp_truncated_data/HGDP_FinalReport_Forward_short.txt'
-filenameFull='./hgdp_truncated_data/HGDP_FinalReport_Forward.txt'
+filenameLTE='HGDP_FinalReport_Forward_header_and_first_1000_v2.txt'
+filenameFull='./HGDP_FinalReport_Forward.txt'
 
 if LTE:
 	filename=filenameLTE
