@@ -85,7 +85,8 @@ def SVD( P , C , k ):
 	for i in range(k) : 
 		h_t=C.dot(V[:,i])
 		H_k[i,:]=h_t.divide(w[i])
-	return H_k,V
+
+	return H_k,V_e.transpose()
 
 # I send Nate a list of row numbers that I want to put into C, he sends me C
 
