@@ -36,7 +36,7 @@ def cols(A):
 #				- rows 		- the number of rows in the data
 
 # NOTES! no empty rows allowed in the text file. File must be formatted well
-
+# to be tested
 
 def data_size(fname,delim=' ', header=True, rowLabels=True):
 	with open(fname,'r') as f:
