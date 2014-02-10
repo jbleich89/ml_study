@@ -54,7 +54,7 @@ def selectRowsForCmat( P , c , seed=None):
 	selected = 0
 	while C_sel.__len__() < c :
 		C_sel.add(ml.getRandomFromDist(P))
-	retunr C_sel
+	return(C_sel)
 
 
 
