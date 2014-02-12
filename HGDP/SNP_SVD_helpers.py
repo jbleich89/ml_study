@@ -1,6 +1,7 @@
 
 import numpy as numpy
 import random as rand
+import csv
 import sys
 
 
@@ -40,6 +41,7 @@ def cols(A):
 
 def data_size(fname,delim=' ', header=True, rowLabels=True):
 	with open(fname,'r') as f:
+		# reader=csv.reader(f,delimiter=' ')
 		try: 
 			lines = 0
 			i=0
@@ -96,5 +98,5 @@ def getRandomFromDist(P,seed=None):
 		while ( num > 0 )  :
 			index+=1
 			num  -= P[index]
-		return index
+		return min(index,P.__len__()-1)
 

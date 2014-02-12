@@ -1,6 +1,7 @@
 import numpy as np
 import random as rand
 import SNP_SVD_helpers as ml
+import csv
 
 # # computePvectForRows 
 # 	Reads through the data and assigns values to the P vector for each row.
@@ -15,21 +16,22 @@ import SNP_SVD_helpers as ml
 #		recognizes and is able to parse correctly using the enumerate iterator.
 #		This code also assumes the file includes both a header and row labels
 
-def computePvectForRows(fname, beta=1, header=True, rowLabels=True) : 
+def computePvectForRows(fname, beta=1):#, header=True, rowLabels=True) : 
 	columns,rows = ml.data_size(fname)
-	ARowMags = np.zeros([1,rows])
-	for j,row in enumerate(fname) : 
-		if j==0 and headder :
-			pass 
-		if headder : 
-			j -= 1 			
-		for i,value in enumerate(row) :
-			if i==0 and rowLabels : 
-				pass
-			else : 
-				ARowMags[0,j] += float(value)**2
-	ARowMagsSum= ARowMags.sum() 
-	P  =[  beta*ARowMags[0]/( ARowMagsSum ) ]
+	ARowMags = [0]*rows
+	P = [0]*rows
+	with open(fname,'rb') as f : 
+		reader=csv.reader(f,delimiter=' ')
+		for j,row in enumerate(reader) : 
+			if j!=0 : 
+				j -= 1 	
+				for i,value in enumerate(row) :
+					if i!=0  : 
+						# print(ARowMags)
+						ARowMags[j] += float(value)**2
+	ARowMagsSum= sum(ARowMags) 
+	for k in range(rows):
+		P[k]=  beta*ARowMags[k]/( ARowMagsSum ) 
 	return(P)
 
 
@@ -49,34 +51,52 @@ def computePvectForRows(fname, beta=1, header=True, rowLabels=True) :
 
 
 def selectRowsForCmat( P , c , seed=None):
-	Plen=P.__len__()
+	# Plen=P.__len__()
 	C_sel=set()
 	selected = 0
 	while C_sel.__len__() < c :
 		C_sel.add(ml.getRandomFromDist(P))
 	return(C_sel)
 
-def buildCfromA(fname, beta=1 , c) :
-	P=computePvectForRows(fname, beta=1, header=True, rowLabels=True)
+
+
+def buildCfromA(fname, w, c, beta=1 ) :
+	P=computePvectForRows(fname, beta=1)#, header=True, rowLabels=True)
+	print(P)
 	C_sel = selectRowsForCmat(P, c)
-	
+	print(C_sel)
+	C=np.zeros([c,w])
+	with open(fname,'rb') as f : 
+		reader=csv.reader(f,delimiter=' ')
+		cnt=0
+		for j,row in enumerate(reader) : 
+			print(row)
+			if j==0 :
+				pass 
+			elif j-1 in C_sel : 
+				C[cnt,:]=(row[1:])
+				cnt+=1
+		return(C)
+
+
+
 
 # TODO: Need to go through and double check column vs rows
-def SVD( P , C , k ):
-	Ccols=cols(C)
-	Crows=rows(C)	
-	
-	C_T=C.transpose()
-	w_e, V_e = np.linalg.eig(C_T.dot(C))
-	
+def SVD( C , k ):
+	Ccols=ml.cols(C)
+	C_T=np.transpose(C)
+	w_e, V_e = np.linalg.eig(C_T.dot(C))	
 	U_svd, S_svd, Vt_svd = np.linalg.svd(C, full_matrices=True)
-
-	H_k = n.empty([k,Acols])
+	H_k = np.empty([k,Ccols])
 	for i in range(k) : 
-		h_t=C.dot(V[:,i])
-		H_k[i,:]=h_t.divide(w[i])
-
-	return H_k,V_e.transpose()
+		h_t=np.dot(C,V_e[:,i])
+		print(h_t)
+		print(w_e[i])
+		jk=np.divide(h_t,w_e[i])
+		print(jk)
+		print(H_k)
+		H_k[i,:]=jk
+	return H_k,np.transpose(V_e)
 
 # I send Nate a list of row numbers that I want to put into C, he sends me C
 
