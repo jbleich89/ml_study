@@ -2,6 +2,9 @@ import numpy as np
 import random as rand
 import SNP_SVD_helpers as ml
 import csv
+from matplotlib import pyplot as plt
+import pylab
+from mpl_toolkits.mplot3d import Axes3D
 
 # # computePvectForRows 
 # 	Reads through the data and assigns values to the P vector for each row.
@@ -24,11 +27,12 @@ def computePvectForRows(fname, beta=1):#, header=True, rowLabels=True) :
 		reader=csv.reader(f,delimiter=' ')
 		for j,row in enumerate(reader) : 
 			if j!=0 : 
+				# print(j)
 				j -= 1 	
 				for i,value in enumerate(row) :
-					if i!=0  : 
-						# print(ARowMags)
+					if i!=0: 
 						ARowMags[j] += float(value)**2
+	# print(ARowMags)
 	ARowMagsSum= sum(ARowMags) 
 	for k in range(rows):
 		P[k]=  beta*ARowMags[k]/( ARowMagsSum ) 
@@ -60,51 +64,66 @@ def selectRowsForCmat( P , c , seed=None):
 
 
 
-def buildCfromA(fname, w, c, beta=1 ) :
+def buildCfromA(fname, c, beta=1 ) :
+	cols,rows= ml.data_size(fname)
 	P=computePvectForRows(fname, beta=1)#, header=True, rowLabels=True)
-	print(P)
+	# print(P)
 	C_sel = selectRowsForCmat(P, c)
-	print(C_sel)
-	C=np.zeros([c,w])
+	# print(C_sel)
+	C=np.zeros([c,cols])
 	with open(fname,'rb') as f : 
 		reader=csv.reader(f,delimiter=' ')
 		cnt=0
 		for j,row in enumerate(reader) : 
-			print(row)
+			# print(row)
 			if j==0 :
 				pass 
-			elif j-1 in C_sel : 
+			elif j-1 in C_sel :
+				# print(C[cnt,:])
+				# print(row[1:]) 
 				C[cnt,:]=(row[1:])
 				cnt+=1
 		return(C)
-
-
 
 
 # TODO: Need to go through and double check column vs rows
 def SVD( C , k ):
 	Ccols=ml.cols(C)
 	C_T=np.transpose(C)
-	w_e, V_e = np.linalg.eig(C_T.dot(C))	
+	# w_e, V_e = np.linalg.eig(C_T.dot(C))	
 	U_svd, S_svd, Vt_svd = np.linalg.svd(C, full_matrices=True)
-	H_k = np.empty([k,Ccols])
-	for i in range(k) : 
-		h_t=np.dot(C,V_e[:,i])
-		print(h_t)
-		print(w_e[i])
-		jk=np.divide(h_t,w_e[i])
-		print(jk)
-		print(H_k)
-		H_k[i,:]=jk
-	return H_k,np.transpose(V_e)
+	Ht_svd = np.transpose(U_svd)[:k,:]
+	# print(Ht_svd)
+	Projected = Ht_svd.dot(C)
+	return Projected
 
-# I send Nate a list of row numbers that I want to put into C, he sends me C
+# def checkSVDvsEigDecomp(C, U_svd, S_svd, Vt_svd):
+# 	S[:S_svd.__len__(), :S_svd.__len__()] = numpy.diag(S_svd)
+# 	numpy.allclose(C, numpy.dot(U_svd, numpy.dot(S_svd, Vt_svd)))
 
-def checkSVDvsEigDecomp(C, U_svd, S_svd, Vt_svd):
-	S[:S_svd.__len__(), :S_svd.__len__()] = numpy.diag(S_svd)
-	numpy.allclose(C, numpy.dot(U_svd, numpy.dot(S_svd, Vt_svd)))
+def SVDSNP( c, 	fname='../hgdp_truncated_data/clean_data.txt', dimensions=3):
+	C=buildCfromA(fname, c)
+	res = SVD(C,dimensions)
+	return res
 
+def SNP_main(c=950):
+	res1=SVDSNP(250)
+	res2=SVDSNP(500)
+	res3=SVDSNP(750)
+	res4=SVDSNP(900)
+	fig = pylab.figure()
+	ax1 = fig.add_subplot(2, 2, 1, projection='3d')
+	ax1.scatter(res1[0,:],res1[1,:],res1[2,:])
+	ax2 = fig.add_subplot(2, 2, 2, projection='3d')
+	ax2.scatter(res2[0,:],res2[1,:],res2[2,:])
+	ax3 = fig.add_subplot(2, 2, 3, projection='3d')
+	ax3.scatter(res3[0,:],res3[1,:],res3[2,:])
+	ax4 = fig.add_subplot(2, 2, 4, projection='3d')
+	ax4.scatter(res4[0,:],res4[1,:],res4[2,:])
+	plt.show()
 
+if __name__=="__main__":
+	SNP_main()
 
 
 

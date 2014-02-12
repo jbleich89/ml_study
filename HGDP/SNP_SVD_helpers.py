@@ -39,7 +39,7 @@ def cols(A):
 # NOTES! no empty rows allowed in the text file. File must be formatted well
 # to be tested
 
-def data_size(fname,delim=' ', header=True, rowLabels=True):
+def data_size(fname,delim=' ', header=False, rowLabels=True):
 	with open(fname,'r') as f:
 		# reader=csv.reader(f,delimiter=' ')
 		try: 
