@@ -3,6 +3,7 @@ import_matrix <- function(path){
     Y <- imported[,1] # y is first column of imported matrix
     X <- cbind(1,imported[,-1]) #remove the first column and then attach as the first column all 1s. 
     my_list <- list("X"=X, "Y"=Y)
+    # print(my_list)
     return (my_list)
 }
 
@@ -20,7 +21,7 @@ regular_grad_desc <- function(X,Y) {
 
     # squared error cost function
     cost <- function(X, Y, Theta) {
-      sum( (X %*% Theta - Y)^2 ) / (2*length(Y))
+      sum( (X %*% Theta - Y)^2 ) / (2*length(Y)) # WHY * 1/(2*length(Y)) ?
     }
 
     # learning rate and iteration limit
@@ -73,8 +74,8 @@ stochastic_grad_desc <- function(X,Y) {
     return (Theta)
 }
 
-path_1 <- "./ml_study/gradient_descent/grad_descent_test_1.txt"
-path_2 <- "./ml_study/gradient_descent/grad_descent_test_2.txt"
+path_1 <- "../grad_descent_test_1.txt"
+path_2 <- "../grad_descent_test_2.txt"
 
 vars <- import_matrix(path_1)
 print(normal_equation_solution(vars$X, vars$Y))
