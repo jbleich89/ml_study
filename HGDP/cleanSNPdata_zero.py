@@ -66,16 +66,15 @@ def letters(allels):
 		b2b1 = letters[1] + letters[0]   #  0
 		b2b2 = letters[1] + letters[1]   # -1
 		if mode == b1b1:
-			mode = 1
+			allels = {b1b1 : 0 , b1b2 : 1 , b2b1 : 1  , b2b2 : -1 , '--' : mode}
 		elif mode == b1b2:
-			mode = 0
+			allels = {b1b1 : 1 , b1b2 : 0 , b2b1 : 0  , b2b2 : -1 , '--' : mode}
 		elif mode == b2b1:
-			mode = 0
+			allels = {b1b1 : 1 , b1b2 : 0 , b2b1 : 0  , b2b2 : -1 , '--' : mode}
 		elif mode == b2b2:
-			mode = -1
-		allels = {b1b1 : 1 , b1b2 : 0 , b2b1 : 0  , b2b2 : -1 , '--' : mode}    # Empty elements are set to most common in row.  NOTE: Divergent from Mahoney
+			allels = {b1b1 : 1 , b1b2 : -1 , b2b1 : -1  , b2b2 : 0 , '--' : mode}
 		return allels
-	return {b1b1 : 1 , '--' : 1	}	
+	return {b1b1 : 0 , '--' : 0	}	
 def check_missing(values):
 	count = Counter(values)
 	for v in values:
