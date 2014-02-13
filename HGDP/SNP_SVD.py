@@ -67,9 +67,9 @@ def selectRowsForCmat( P , c , seed=None):
 def buildCfromA(fname, c, beta=1 ) :
 	cols,rows= ml.data_size(fname)
 	P=computePvectForRows(fname, beta=1)#, header=True, rowLabels=True)
-	# print(P)
+	print('Pvector done computing')
 	C_sel = selectRowsForCmat(P, c)
-	# print(C_sel)
+	print('c rows selected')
 	C=np.zeros([c,cols])
 	with open(fname,'rb') as f : 
 		reader=csv.reader(f,delimiter=' ')
@@ -88,38 +88,62 @@ def buildCfromA(fname, c, beta=1 ) :
 
 # TODO: Need to go through and double check column vs rows
 def SVD( C , k ):
-	Ccols=ml.cols(C)
-	C_T=np.transpose(C)
-	# w_e, V_e = np.linalg.eig(C_T.dot(C))	
+	# Ccols=ml.cols(C)
+	# C_T=np.transpose(C)
+	# w_e, V_e = np.linalg.eig(C.dot(C_T))	
 	U_svd, S_svd, Vt_svd = np.linalg.svd(C, full_matrices=True)
 	Ht_svd = np.transpose(U_svd)[:k,:]
+	# Ht_svd2 = np.transpose(V_e)[:k,:]
+
 	# print(Ht_svd)
 	Projected = Ht_svd.dot(C)
+	# Projected = Ht_svd2.dot(C)
 	return Projected
 
 # def checkSVDvsEigDecomp(C, U_svd, S_svd, Vt_svd):
 # 	S[:S_svd.__len__(), :S_svd.__len__()] = numpy.diag(S_svd)
 # 	numpy.allclose(C, numpy.dot(U_svd, numpy.dot(S_svd, Vt_svd)))
 
-def SVDSNP( c, 	fname='../hgdp_truncated_data/clean_data.txt', dimensions=3):
+def SVDSNP( c, 	fname='../hgdp_truncated_data/clean_data_2.txt', dimensions=3):
 	C=buildCfromA(fname, c)
+	print('builtC')
 	res = SVD(C,dimensions)
 	return res
 
-def SNP_main(c=950):
-	res1=SVDSNP(250)
-	res2=SVDSNP(500)
-	res3=SVDSNP(750)
-	res4=SVDSNP(900)
+def SNP_main(c=10000):
 	fig = pylab.figure()
+	# res=SVDSNP(c)
+	# ax1 = fig.add_subplot(2, 2, 1, projection='3d')
+	# # ax1.scatter(res1[0,:],res1[1,:],res1[2,:])
+	# # ax = Axes3D(fig)
+	# res=res.real
+
+	# print(res)
+	# print(res.__len__())
+	# print(res[0].__len__())
+	# ax1.scatter(res[0,:],res[1,:],res[2,:])
+
+	res1=SVDSNP(50000)
+	res1=res1.real
+	# print(res1.__len__())
+	# print(res1[0].__len__())
+	# print(res1[2].__len__())
+	# print(res1)
 	ax1 = fig.add_subplot(2, 2, 1, projection='3d')
 	ax1.scatter(res1[0,:],res1[1,:],res1[2,:])
+
+	res2=SVDSNP(10000)
 	ax2 = fig.add_subplot(2, 2, 2, projection='3d')
 	ax2.scatter(res2[0,:],res2[1,:],res2[2,:])
+
+	res3=SVDSNP(1000)
 	ax3 = fig.add_subplot(2, 2, 3, projection='3d')
 	ax3.scatter(res3[0,:],res3[1,:],res3[2,:])
+
+	res4=SVDSNP(100)
 	ax4 = fig.add_subplot(2, 2, 4, projection='3d')
 	ax4.scatter(res4[0,:],res4[1,:],res4[2,:])
+
 	plt.show()
 
 if __name__=="__main__":
