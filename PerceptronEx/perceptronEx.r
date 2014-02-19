@@ -14,7 +14,7 @@ ani.options(interval=.05)
 col.range <- heat.colors(15)
 
 
-generatePts <- function(dx1=1.5,dy1=0,dx2=.5,dy2=-1.5, numPts=500){
+generatePts <- function(dx1=-.0,dy1=-.0,dx2=.25,dy2=.20, numPts=500){
 	Tpts=rbind(rnorm(numPts/2)+dx1,rnorm(numPts/2)+dy1)
 	Fpts=rbind(rnorm(numPts/2)+dx2,rnorm(numPts/2)+dy2)
 	TptColors=c( rep( 1,numPts/2) )
@@ -49,16 +49,16 @@ normalize <-function(mat){
 
 
 
-findW <-function(dataN,data, wIterations=1000000){
+findW <-function(dataN,data, wIterations=1000){
 	dData=dim(dataN)
 	ptsN=dataN[2:dData[1],]
 	pts=data[2:dData[1],]
-	class=data[1,]
+	class=dataN[1,]
 	d=dim(ptsN)
 	rows=d[1]
 	cols=d[2]
 	w=matrix(rep( rep(c(0),each=rows),each=wIterations),ncol=wIterations)
-	w[1,1]=1
+	w[1,1]=.01
 	i=1
 	misClasExist=TRUE
 	lastVect=0
@@ -77,8 +77,8 @@ findW <-function(dataN,data, wIterations=1000000){
 				noBadFound=FALSE
 				misClasExist=TRUE
 				i=i+1
-				w[,i]=w[,i-1]+class[selected]*normalize(t(projection))*(ptsN[,selected])
-				if(i%%10000==0){
+				w[,i]=w[,i-1]-class[selected]*(ptsN[,selected])
+				if(i%%100==0){
 					plot(pts[1,],pts[2,], col=ifelse(class[]==1,'red','black'))
 					abline(0,w[2,i]/w[1,i])
 				}
@@ -90,7 +90,7 @@ findW <-function(dataN,data, wIterations=1000000){
 	return (w)
 }
 
-numPts=1000
+numPts=100
 data <- generatePts( numPts=numPts)
 # data
 plot(data[2,],data[3,], col=ifelse(data[1,]==1,'red','black'))
