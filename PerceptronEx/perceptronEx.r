@@ -78,7 +78,7 @@ findW <-function(dataN,data, wIterations=10000){
 				misClasExist=TRUE
 				i=i+1
 				w[,i]=w[,i-1]-class[selected]*(ptsN[,selected])
-				print(w[,i])
+				# print(w[,i])
 				if(i%%100==0){
 					plot(pts[1,],pts[2,], col=ifelse(class[]==1,'black','red'))
 					abline(0,-w[1,i]/w[2,i])
