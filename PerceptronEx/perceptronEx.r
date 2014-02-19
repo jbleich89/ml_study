@@ -49,7 +49,7 @@ normalize <-function(mat){
 
 
 
-findW <-function(dataN,data, wIterations=1000){
+findW <-function(dataN,data, wIterations=10000){
 	dData=dim(dataN)
 	ptsN=dataN[2:dData[1],]
 	pts=data[2:dData[1],]
@@ -78,9 +78,12 @@ findW <-function(dataN,data, wIterations=1000){
 				misClasExist=TRUE
 				i=i+1
 				w[,i]=w[,i-1]-class[selected]*(ptsN[,selected])
+				print(w[,i])
 				if(i%%100==0){
-					plot(pts[1,],pts[2,], col=ifelse(class[]==1,'red','black'))
+					plot(pts[1,],pts[2,], col=ifelse(class[]==1,'black','red'))
 					abline(0,-w[1,i]/w[2,i])
+					wNorm = (w[,i])/sqrt(sum((w[,i])^2))
+					arrows(0,0,wNorm[1],wNorm[2])
 				}
 				# Sys.sleep(.025)
 			}
@@ -89,15 +92,15 @@ findW <-function(dataN,data, wIterations=1000){
 	}
 	return (w)
 }
-
+par(pty="s")
 numPts=1000
 data <- generatePts( numPts=numPts)
 # data
-plot(data[2,],data[3,], col=ifelse(data[1,]==1,'red','black'))
+plot(data[2,],data[3,], col=ifelse(data[1,]==1,'black','red'))
 Sys.sleep(1)
 dataN<-data
 dataN[2:3,] <- normalize(dataN[2:3,])
-plot(dataN[2,],dataN[3,], col=ifelse(dataN[1,]==1,'red','black'))
+plot(dataN[2,],dataN[3,], col=ifelse(dataN[1,]==1,'black','red'))
 Sys.sleep(1)
 w=findW(dataN,data)
 
