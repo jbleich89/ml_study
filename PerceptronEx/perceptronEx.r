@@ -14,7 +14,7 @@ ani.options(interval=.05)
 col.range <- heat.colors(15)
 
 
-generatePts <- function(dx1=-.0,dy1=-.0,dx2=.25,dy2=.20, numPts=500){
+generatePts <- function(dx1=-.0,dy1=-.0,dx2=-1.5,dy2=1.50, numPts=500){
 	Tpts=rbind(rnorm(numPts/2)+dx1,rnorm(numPts/2)+dy1)
 	Fpts=rbind(rnorm(numPts/2)+dx2,rnorm(numPts/2)+dy2)
 	TptColors=c( rep( 1,numPts/2) )
@@ -80,7 +80,7 @@ findW <-function(dataN,data, wIterations=1000){
 				w[,i]=w[,i-1]-class[selected]*(ptsN[,selected])
 				if(i%%100==0){
 					plot(pts[1,],pts[2,], col=ifelse(class[]==1,'red','black'))
-					abline(0,w[2,i]/w[1,i])
+					abline(0,-w[1,i]/w[2,i])
 				}
 				# Sys.sleep(.025)
 			}
@@ -90,7 +90,7 @@ findW <-function(dataN,data, wIterations=1000){
 	return (w)
 }
 
-numPts=100
+numPts=1000
 data <- generatePts( numPts=numPts)
 # data
 plot(data[2,],data[3,], col=ifelse(data[1,]==1,'red','black'))
